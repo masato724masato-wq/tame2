@@ -111,7 +111,7 @@ int quest_time(){
 
   if(q_type == '2'){
   
-  time_count = 3;
+  time_count = 4;
      if(q_count==0){
         fprintf(com0out, "Q: アメリカの首都は？ 1:ニューヨーク 2:ワシントン 3:ロサンゼルス 4:カリフォルニア \n");
         fprintf(com1out, "Q:　アメリカの首都は？ 1:ニューヨーク 2:ワシントン 3:ロサンゼルス 4:カリフォルニア\n");
@@ -339,7 +339,7 @@ void task1() {
          V(1);
         }
         
-     
+     skipmt();
     }
 }
 
@@ -410,7 +410,7 @@ void task2() {
          }
       V(1);       
      } 
-       
+       skipmt();
     }
   
 }
@@ -419,7 +419,7 @@ void task2() {
 void task4() {
     while (1) {
     
-        for (volatile int i = 0; i < 70000; i++); 
+        for (volatile int i = 0; i < 300000; i++); 
 
         P(1); /* 変数を操作するのでロックする */
         
@@ -508,6 +508,7 @@ fprintf(com0out,"ゲーム開始\n難易度を選んで\n難易度1or2\n");
     if (winner_id != 0 || (answer_right1 == 1 && answer_right2 == 1)){
         break; 
     }
+    skipmt();
     }
     
      P(1);
