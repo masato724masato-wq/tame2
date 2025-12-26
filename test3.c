@@ -249,7 +249,7 @@ void print_hp(FILE *fp, int hp) {
     fprintf(fp, "]");
 }
 
-/* ステータス表示用（両方の画面に今のHPを出す） */
+/* ステータス表示用 両方の画面に今のHPを出す */
 void show_status() {
     /* Player 1 画面 */
     fprintf(com0out, "\nあなた:");
@@ -311,10 +311,7 @@ void task1() {
                 }
                 
  
-           } else {
-                /* 既に勝負がついている場合（念のため） */
-             
-            }
+           } 
         } else if(answer_right1==0 && answer_now != 2 ){/*4問目以降*/
           answer_key = key1;
           answer_now = 1; 
@@ -351,19 +348,16 @@ void task2() {
     int key2;
 
     while (1) {
-        /* 1. キー入力待ち（ポーリング） */
-        /* ブロックするread()だと他タスクが動けなくなる可能性があるため、
-           inkey()のような非ブロッキング入力でループを回し、
-           何もなければスキップする実装が安全です */
+        /* 1. キー入力待ち */
+       
         key2 = inkey(1); 
          if (key2 != -1) { /* 何か押されたら */
             
-            /* 2. 早押し判定：回答権セマフォを取得してみる */
-            /* P操作。もし相手が先に取っていたらここで待たされる */
+            /*早押し判定*/
             P(1); 
           if(q_count <= 3 && answer_right2 != 1){
 
-            /* 3. ここに来れた＝回答権ゲット！ */
+            /*回答権ゲット*/
             if (winner_id == 0 && answer_right2 == 0) { /* まだ誰も回答していないなら */
                 
                 answer_key = key2;
@@ -373,7 +367,7 @@ void task2() {
                 
                 if (answer_key == answer){
                  winner_id = 2;
-                /* Masterに「回答があった」と知らせる */
+                /* Masterに回答があったと知らせる */
                  
                  } else{
                  fprintf(com1out,"\n不正解\n");
@@ -424,17 +418,16 @@ void task2() {
 
 void task4() {
     while (1) {
-        /* 1秒程度のウェイト（環境に合わせて数字を調整してください） */
-        /* 目安: 50000で一瞬なら、その20〜100倍くらい必要かもしれません */
+    
         for (volatile int i = 0; i < 70000; i++); 
 
         P(1); /* 変数を操作するのでロックする */
         
-        /* タイマーが動いている(>0) かつ まだ誰も勝っていない(winner_id==0) 場合 */
+        /* タイマーが動いている かつ まだ誰も勝っていない(winner_id==0) 場合 */
         if (time_left > 0 && winner_id == 0 && (answer_right1 == 0 || answer_right2 == 0)) {
             time_left--;
 
-            /* 残り時間を表示（邪魔にならないよう3秒以下のみ表示など） */
+            /* 残り時間を表示 */
             if (time_left <= 5) {
                 fprintf(com0out, "あと%d秒\n", time_left);
                 fprintf(com1out, "あと%d秒\n", time_left);
@@ -445,14 +438,13 @@ void task4() {
                 fprintf(com0out, "\n--- 時間切れ！ ---\n");
                 fprintf(com1out, "\n--- 時間切れ！ ---\n");
 
-                /* 両方間違えたことにする（＝次の問題へ進む条件） */
+                /* 両方間違えたことにする */
                 answer_right1 = 1;
                 answer_right2 = 1;
                 winner_id = 0; 
                 correct_count = 0;
                 
-                /* これで task3 のループ条件 (answer_right1==1 && answer_right2==1) 
-                   に引っかかり、次の問題へ進みます */
+                
             }
         }
         V(1); /* ロック解除 */
@@ -461,8 +453,7 @@ void task4() {
 
 /* Masterタスク */
 void task3(){
-      /* 初期化など... */
-    /* fdopenでfp_p1, fp_p2を用意... */
+   
 fprintf(com0out,"ゲーム開始\n難易度を選んで\n難易度1or2\n");
    while (1) {
     if (q_type != 0){
@@ -568,7 +559,6 @@ fprintf(com0out,"ゲーム開始\n難易度を選んで\n難易度1or2\n");
 
   
 
-/* タスク1: ポート0 (標準出力) へメッセージを出し続ける (ハートビート) */
 /*-----------------------------------------------------
  * メイン関数
  * ------------------------------------------------------------------ */
